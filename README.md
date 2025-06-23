@@ -1,11 +1,22 @@
-alignment_case_study/ – where we’ll fine-tune a model
-data_gen/ for creating training data
-finetune/ for the actual fine-tuning notebook
-results.md to summarize what changed
-eval_harness/ – where we’ll test and measure the model’s behavior
-notebooks/ for a notebook that runs prompts through the model
-metrics.py for code that scores “goodness” of answers
-viz/ for saved charts or plots
+
+
+
+```
+model-behavior-artifacts/
+├── README.md                     ← Project Overview 
+├── alignment_case_study/         ← fine-tune the model - LoRA
+│   ├── data_gen/                 ← generate the small training set
+│   │   └── synth_data.py         ← script to produce prompt/good/bad JSONL
+│   ├── finetune/                 ← notebook that actually runs the fine-tune
+│   │   └── finetune.ipynb
+│   └── results.md                ← Manual write-up summarizing what changed
+└── eval_harness/                 ← code to run the model on test prompts
+    ├── notebooks/
+    │   └── eval_notebook.ipynb   ← notebook to run prompts³ and compute scores
+    ├── metrics.py                ← (optional) helper functions to score outputs
+    └── viz/                      ← any saved charts or PNGs of results
+
+```
 
 5 example prompts capturing different situations:
 1. Someone with $6,000 debt, $800 surplus
@@ -42,6 +53,11 @@ Tokenization & Dataset Creation
 Tokenization: Converting raw text into numeric IDs the model understands.
 We used the model’s “tokenizer” to turn each “prompt + good answer” into a fixed-length list of 512 tokens (numbers), padding shorter ones.
 Wrapped those token lists into a PyTorch Dataset—a simple Python class that the training loop can pull data from.
+Load & Tokenize Data
+Load synthetic_preferences.jsonl into a Python list.
+Construct training examples by concatenating each prompt with its “good” answer.
+Tokenize those texts to fixed-length vectors of numbers (tokens) so the model can digest them.
+Wrap those vectors in a simple PyTorch Dataset so the Trainer can pull batches.
 
 LoRA Fine-Tuning
 What is LoRA?
